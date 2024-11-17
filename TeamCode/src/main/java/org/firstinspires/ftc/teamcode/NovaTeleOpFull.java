@@ -2,14 +2,15 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
 
 @TeleOp
-public class NovaTeleOpLinearSlidesFront extends LinearOpMode {
+public class NovaTeleOpFull extends LinearOpMode{
 
     public DcMotor leftSliderMotor;
     public DcMotor rightSliderMotor;
@@ -21,17 +22,14 @@ public class NovaTeleOpLinearSlidesFront extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-//        DcMotor armMotor;
-//        armMotor = hardwareMap.dcMotor.get("armMotor");
-//        Servo claw;
-//        claw = hardwareMap.servo.get("claw");
+        CRServo claw = hardwareMap.crservo.get("claw");
+        boolean leftToggle = false;
+        boolean rightToggle = false;
 
-//        limitSwitch = hardwareMap.touchSensor.get("limitSwitch"); // ????
-
-//        boolean armPreviousButtonState = false;
-//        boolean armMotorToggle = false;
-//        boolean clawPreviousButtonState = false;
-//        boolean clawServoToggle = false;
+        DcMotor armMotor;
+        armMotor = hardwareMap.dcMotor.get("armMotor");
+        boolean armMotorToggleUp = false;
+        boolean armMotorToggleDown = false;
 
         // Declare our motors
         // Make sure your ID's match your configuration
@@ -44,18 +42,13 @@ public class NovaTeleOpLinearSlidesFront extends LinearOpMode {
         rightSliderMotor = hardwareMap.dcMotor.get("rightSliderMotor");
         rightSliderMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
-
         // These lines reset the encoder and do the job of the limit switch method
         leftSliderMotor.setPower(0);
         rightSliderMotor.setPower(0);
-
         leftSliderMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightSliderMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
         leftSliderMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightSliderMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-
 
         // Reverse the right side motors. THIS IS WRONG FOR OUR SETUP!!!!!
         // If your robot moves backwards when commanded to go forwards,
@@ -64,12 +57,10 @@ public class NovaTeleOpLinearSlidesFront extends LinearOpMode {
 
         frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-
         frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         waitForStart();
-
         if (isStopRequested()) return;
 
         while (opModeIsActive()) {
@@ -97,33 +88,48 @@ public class NovaTeleOpLinearSlidesFront extends LinearOpMode {
             frontRightMotor.setPower(frontRightPower);
             backRightMotor.setPower(backRightPower);
 
-            // NO ARM OR CLAW MOVEMENT ON RIGHT NOW
 
-//            // ARM MOVEMENT -----------------------------------------------------------------------|
-//            // up and down movement, so it needs to stop or it will go straight into slides/ground
-//            boolean currentButtonState = gamepad2.x;
-//
-//            while (currentButtonState) {
-//                armMotorToggle = !armMotorToggle;
-//                armMotor.setPower(armMotorToggle ? -0.5 : 0.5);
-//            }
-//
-////            armPreviousButtonState = currentButtonState; // possibly useless
-//
-//            // CLAW MOVEMENT-----------------------------------------------------------------------|
-//            if (gamepad2.b){
-//                claw.setPosition(0.25); //prelim pos, edit after testing
-//                sleep(2000); // fix
-//                claw.setPosition(0);
-//            }
-//
-////            boolean clawCurrentButtonState = gamepad2.b;
-////
-////            if (clawCurrentButtonState && !clawPreviousButtonState){
-////                clawServoToggle = !clawServoToggle;
-////
-////                claw.setPosition(0)
-////            }
+            // ARM MOVEMENT------------------------------------------------------------------------|
+            if (gamepad2.x) {
+                while (gamepad2.x) {
+//                armMotorToggleUp = !armMotorToggleUp;
+                    armMotor.setPower(0.6);
+                }
+                armMotor.setPower(0.0);
+            }
+
+            if (gamepad2.a) {
+                while (gamepad2.a) {
+//                armMotorToggleDown = !armMotorToggleDown;
+                    armMotor.setPower(-0.8);
+                }
+                armMotor.setPower(0.0);
+            }
+
+
+            // CLAW MOVEMENT-----------------------------------------------------------------------|
+            telemetry.addLine();
+            telemetry.addData("power:", claw.getPower());
+            telemetry.update();
+
+            // POWER SETTINGS
+            // 0.5 - stationary     1.0 - max right     0.0 - max left
+
+            if (gamepad2.y) {
+                while (gamepad2.y) {
+//                    leftToggle = !leftToggle;
+                    claw.setPower(-1.0);
+                }
+                claw.setPower(0.0);
+            }
+
+            if (gamepad2.b) {
+                while (gamepad2.b) {
+//                    rightToggle = !rightToggle;
+                    claw.setPower(1.0);
+                }
+                claw.setPower(0.0);
+            }
 
             // LINEAR SLIDES MOVEMENT -------------------------------------------------------------|
             // If dpad left is pressed, sliders up to medium height
@@ -161,6 +167,8 @@ public class NovaTeleOpLinearSlidesFront extends LinearOpMode {
 //                resetSliderEncoderWithLimitSwitch();
                 moveDown(0, 0.3, -10);
             }
+
+
         }
     }
 
@@ -328,5 +336,6 @@ public class NovaTeleOpLinearSlidesFront extends LinearOpMode {
         leftSliderMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightSliderMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
+
 
 }

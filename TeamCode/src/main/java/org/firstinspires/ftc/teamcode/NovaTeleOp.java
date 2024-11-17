@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
 
-@TeleOp
+//@TeleOp
 public class NovaTeleOp extends LinearOpMode {
 
     public DcMotor leftSliderMotor;

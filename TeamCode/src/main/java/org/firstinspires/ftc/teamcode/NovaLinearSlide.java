@@ -4,13 +4,11 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
 
 @TeleOp
-public class NovaTeleOpLinearSlidesFront extends LinearOpMode {
-
+public class NovaLinearSlide extends LinearOpMode {
     public DcMotor leftSliderMotor;
     public DcMotor rightSliderMotor;
 
@@ -21,29 +19,9 @@ public class NovaTeleOpLinearSlidesFront extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-//        DcMotor armMotor;
-//        armMotor = hardwareMap.dcMotor.get("armMotor");
-//        Servo claw;
-//        claw = hardwareMap.servo.get("claw");
-
-//        limitSwitch = hardwareMap.touchSensor.get("limitSwitch"); // ????
-
-//        boolean armPreviousButtonState = false;
-//        boolean armMotorToggle = false;
-//        boolean clawPreviousButtonState = false;
-//        boolean clawServoToggle = false;
-
-        // Declare our motors
-        // Make sure your ID's match your configuration
-        DcMotor frontLeftMotor = hardwareMap.dcMotor.get("frontLeftMotor");
-        DcMotor backLeftMotor = hardwareMap.dcMotor.get("backLeftMotor");
-        DcMotor frontRightMotor = hardwareMap.dcMotor.get("frontRightMotor");
-        DcMotor backRightMotor = hardwareMap.dcMotor.get("backRightMotor");
-
         leftSliderMotor = hardwareMap.dcMotor.get("leftSliderMotor");
         rightSliderMotor = hardwareMap.dcMotor.get("rightSliderMotor");
-        rightSliderMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-
+//        leftSliderMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // These lines reset the encoder and do the job of the limit switch method
         leftSliderMotor.setPower(0);
@@ -56,77 +34,24 @@ public class NovaTeleOpLinearSlidesFront extends LinearOpMode {
         rightSliderMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
-
-        // Reverse the right side motors. THIS IS WRONG FOR OUR SETUP!!!!!
-        // If your robot moves backwards when commanded to go forwards,
-        // reverse the left side instead.
-        // See the note about this earlier on this page.
-
-        frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-
-        frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-
         waitForStart();
 
         if (isStopRequested()) return;
 
         while (opModeIsActive()) {
-            // DRIVEBASE MOVEMENT -----------------------------------------------------------------|
-            double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
-            double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
-            double rx = gamepad1.right_stick_x;
-            telemetry.addLine("Current Positions: X: " + x + "; Y: " + y + "; RX: " + rx);
 
-            // Denominator is the largest motor power (absolute value) or 1
-            // This ensures all the powers maintain the same ratio,
-            // but only if at least one is out of the range [-1, 1]
-            double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-            double frontLeftPower = (y + x + rx) / denominator;
-            double backLeftPower = (y - x + rx) / denominator;
-            double frontRightPower = (y - x - rx) / denominator;
-            double backRightPower = (y + x - rx) / denominator;
-            telemetry.addLine("Denominator: " + denominator);
-            telemetry.addLine("FL, FR, BL, BR Power: " + frontLeftPower + "," + frontRightPower
-                    + "," + backLeftPower + "," + backRightPower);
+            telemetry.addData("left pos: ", leftSliderMotor.getCurrentPosition());
+            telemetry.addData("right pos: ", rightSliderMotor.getCurrentPosition());
+
             telemetry.update();
-
-            frontLeftMotor.setPower(frontLeftPower);
-            backLeftMotor.setPower(backLeftPower);
-            frontRightMotor.setPower(frontRightPower);
-            backRightMotor.setPower(backRightPower);
-
-            // NO ARM OR CLAW MOVEMENT ON RIGHT NOW
-
-//            // ARM MOVEMENT -----------------------------------------------------------------------|
-//            // up and down movement, so it needs to stop or it will go straight into slides/ground
-//            boolean currentButtonState = gamepad2.x;
-//
-//            while (currentButtonState) {
-//                armMotorToggle = !armMotorToggle;
-//                armMotor.setPower(armMotorToggle ? -0.5 : 0.5);
-//            }
-//
-////            armPreviousButtonState = currentButtonState; // possibly useless
-//
-//            // CLAW MOVEMENT-----------------------------------------------------------------------|
-//            if (gamepad2.b){
-//                claw.setPosition(0.25); //prelim pos, edit after testing
-//                sleep(2000); // fix
-//                claw.setPosition(0);
-//            }
-//
-////            boolean clawCurrentButtonState = gamepad2.b;
-////
-////            if (clawCurrentButtonState && !clawPreviousButtonState){
-////                clawServoToggle = !clawServoToggle;
-////
-////                claw.setPosition(0)
-////            }
-
             // LINEAR SLIDES MOVEMENT -------------------------------------------------------------|
-            // If dpad left is pressed, sliders up to medium height
+            // If dpad left is pressed, sliders up to medium height 1500
+
+            if (gamepad2.a){
+                telemetry.addLine("pressed");
+                telemetry.update();
+            }
+
             if (gamepad2.dpad_left) {
 //                pidMoveSliderToEncoderPosBrakeMode(1500, .1, 100);
 //                if (Math.abs(rightSliderMotor.getCurrentPosition()) < 1500) {
@@ -140,7 +65,7 @@ public class NovaTeleOpLinearSlidesFront extends LinearOpMode {
                 }
             }
 
-            // If dpad up is pressed, sliders up to high height
+            // If dpad up is pressed, sliders up to high height 1800
             if (gamepad2.dpad_up) {
                 telemetry.addLine("up");
                 telemetry.update();
@@ -162,8 +87,11 @@ public class NovaTeleOpLinearSlidesFront extends LinearOpMode {
                 moveDown(0, 0.3, -10);
             }
         }
-    }
 
+        telemetry.addLine("end");
+        telemetry.update();
+
+    }
 
     private void moveUp(int targetEncoderPos, double power, int slowDownEncoderPos){
 
@@ -188,6 +116,24 @@ public class NovaTeleOpLinearSlidesFront extends LinearOpMode {
     }
 
 
+
+//    private void moveUp(int targetEncoderPos, double power, int slowDownEncoderPos){
+//
+//        leftSliderMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        rightSliderMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//
+//        while ((Math.abs(rightSliderMotor.getCurrentPosition()) <= targetEncoderPos - slowDownEncoderPos) && opModeIsActive()) {
+//            telemetry.addData("current pos: ", getCurrentSliderEncoderPos());
+//            telemetry.addData("pos: ", rightSliderMotor.getCurrentPosition());
+//            telemetry.addData("target pos: ", targetEncoderPos - slowDownEncoderPos);
+//            telemetry.update();
+//            leftSliderMotor.setPower(power);
+//            rightSliderMotor.setPower(power);
+//        }
+//        leftSliderMotor.setPower(0);
+//        rightSliderMotor.setPower(0);
+//    }
+
     private void moveDown(int targetEncoderPos, double power, int slowDownEncoderPos){
         telemetry.addLine("in moveDown");
         telemetry.update();
@@ -211,16 +157,16 @@ public class NovaTeleOpLinearSlidesFront extends LinearOpMode {
         rightSliderMotor.setDirection(DcMotorSimple.Direction.FORWARD);
     }
 
-    // PID METHODS --------------------------------------------------------------------------------|
 
+    // PID METHODS --------------------------------------------------------------------------------|
     public void pidMoveSliderToEncoderPosBrakeMode (int targetEncoderPos, double power, int slowDownEncoderPos) {
         isSliderMoving = true;
 
         getCurrentSliderEncoderPos();
 
-        if (targetEncoderPos > leftSliderMotor.getCurrentPosition()) {
+        if (targetEncoderPos > rightSliderMotor.getCurrentPosition()) {
             pidSliderMoveUpBrakeMode(targetEncoderPos, power, slowDownEncoderPos);
-        } else if (targetEncoderPos < leftSliderMotor.getCurrentPosition()) {
+        } else if (targetEncoderPos < rightSliderMotor.getCurrentPosition()) {
             pidSliderMoveDownBrakeMode(targetEncoderPos, power, slowDownEncoderPos);
         }
 
@@ -232,17 +178,33 @@ public class NovaTeleOpLinearSlidesFront extends LinearOpMode {
         rightSliderMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         double encoderDiff;
-        double kP = 0.01;
+        double kP = 0;
 
         getCurrentSliderEncoderPos();
 
         while ((getCurrentSliderEncoderPos() <= targetEncoderPos - slowDownEncoderPos) && opModeIsActive()) {
+            telemetry.addLine("in while loop 1");
+
             encoderDiff = leftSliderMotor.getCurrentPosition() - rightSliderMotor.getCurrentPosition();
+
+            telemetry.addData("left pos: ", leftSliderMotor.getCurrentPosition());
+            telemetry.addData("right pos: ", rightSliderMotor.getCurrentPosition());
+            telemetry.addData("current pos: ", getCurrentSliderEncoderPos());
+            telemetry.addData("target: ", targetEncoderPos);
+            telemetry.addData("encoder diff: ", encoderDiff);
+            telemetry.addData("current power: ", rightSliderMotor.getPower());
+            telemetry.addData("set power: ", power);
+            telemetry.update();
+            sleep(2000);
 
             if (encoderDiff >= 0){
                 leftSliderMotor.setPower((power - kP * encoderDiff));
+                telemetry.addData("power: ", power + kP * encoderDiff);
+                telemetry.update();
                 rightSliderMotor.setPower(power + kP * encoderDiff);
             } else {
+                telemetry.addData("power: ", power + kP * encoderDiff);
+                telemetry.update();
                 rightSliderMotor.setPower((power + kP * encoderDiff));
                 leftSliderMotor.setPower(power - kP * encoderDiff);
             }
@@ -250,13 +212,21 @@ public class NovaTeleOpLinearSlidesFront extends LinearOpMode {
 
 
         while (getCurrentSliderEncoderPos() <= targetEncoderPos && opModeIsActive()) {
+            telemetry.addLine("in while loop 2");
+            telemetry.update();
             encoderDiff = leftSliderMotor.getCurrentPosition() - rightSliderMotor.getCurrentPosition();
             power = 0.3;
 
             if (encoderDiff >= 0) {
                 leftSliderMotor.setPower(power - kP *encoderDiff);
+                telemetry.addData("power: ", power + kP * encoderDiff);
+                telemetry.update();
+
                 rightSliderMotor.setPower(power + kP * encoderDiff);
             } else {
+                telemetry.addData("power: ", power + kP * encoderDiff);
+                telemetry.update();
+
                 rightSliderMotor.setPower(power + kP *encoderDiff);
                 leftSliderMotor.setPower(power-kP * encoderDiff);
             }
@@ -280,7 +250,7 @@ public class NovaTeleOpLinearSlidesFront extends LinearOpMode {
         rightSliderMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         double encoderDiff;
-        double kP = 0.01;
+        double kP = 0.0;
         power = -power;
 
         while (getCurrentSliderEncoderPos() >= targetEncoderPos + slowDownEncoderPos && opModeIsActive()) {

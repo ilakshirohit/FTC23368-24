@@ -16,8 +16,7 @@ public class NovaDriveBase extends LinearOpMode{
         DcMotor backRightMotor = hardwareMap.dcMotor.get("backRightMotor");
 
         frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-
+        backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
