@@ -7,10 +7,10 @@ import com.qualcomm.robotcore.hardware.CRServo;
 @TeleOp
 public class NovaPocket extends LinearOpMode{
 
-    CRServo pocket = hardwareMap.crservo.get("pocket");
-
     @Override
     public void runOpMode() throws InterruptedException {
+        CRServo pocket = hardwareMap.crservo.get("pocket");
+
         waitForStart();
         if (isStopRequested()) return;
 
