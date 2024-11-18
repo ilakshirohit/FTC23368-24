@@ -136,14 +136,14 @@ public class NovaTeleOpFull extends LinearOpMode{
             // POCKET MOVEMENT --------------------------------------------------------------------|
             if (gamepad2.left_bumper){ // up
                 while (gamepad2.left_bumper) {
-                    pocket.setPower(0.75); // right
+                    pocket.setPower(1.0); // right
                 }
                 pocket.setPower(0.0);
             }
 
             if (gamepad2.right_bumper){ // down
                 while (gamepad2.right_bumper){
-                    pocket.setPower(-0.75); // left
+                    pocket.setPower(-1.0); // left
                 }
                 pocket.setPower(0.0);
             }
@@ -173,11 +173,11 @@ public class NovaTeleOpFull extends LinearOpMode{
                 telemetry.addLine("up");
                 telemetry.update();
 //                pidMoveSliderToEncoderPosBrakeMode(500, .1, 100);
-                if (Math.abs(rightSliderMotor.getCurrentPosition()) < 1800) {
+                if (Math.abs(rightSliderMotor.getCurrentPosition()) < 3500) {
 //                if (Math.abs(getCurrentSliderEncoderPos()) < 1800) {
-                    moveUp(1800, 0.4, 10);
+                    moveUp(3500, 0.4, 10);
                 } else {
-                    moveDown(1800, 0.4, 10);
+                    moveDown(3500, 0.4, 10);
                 }
             }
 
@@ -187,10 +187,8 @@ public class NovaTeleOpFull extends LinearOpMode{
                 telemetry.update();
 //                pidMoveSliderToEncoderPosBrakeMode(0, .1, 100);
 //                resetSliderEncoderWithLimitSwitch();
-                moveDown(0, 0.3, -10);
+                moveDown(0, 0.3, -100);
             }
-
-
         }
     }
 
@@ -202,9 +200,7 @@ public class NovaTeleOpFull extends LinearOpMode{
         leftSliderMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE); // BRAKE - resist movement
         rightSliderMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-//        leftSliderMotor.setDirection(DcMotorSimple.Direction.REVERSE); going wrong way now
-
-        while ((Math.abs(rightSliderMotor.getCurrentPosition()) <= targetEncoderPos - slowDownEncoderPos) && opModeIsActive()) {
+        while (gamepad2.dpad_up){
             telemetry.addData("current pos: ", getCurrentSliderEncoderPos());
             telemetry.addData("right pos: ", rightSliderMotor.getCurrentPosition());
             telemetry.addData("left pos: ", leftSliderMotor.getCurrentPosition());
@@ -213,8 +209,15 @@ public class NovaTeleOpFull extends LinearOpMode{
             leftSliderMotor.setPower(power);
             rightSliderMotor.setPower(power);
         }
+
         leftSliderMotor.setPower(0);
         rightSliderMotor.setPower(0);
+
+        //        while ((Math.abs(rightSliderMotor.getCurrentPosition()) <= targetEncoderPos - slowDownEncoderPos) && opModeIsActive()) {
+//            leftSliderMotor.setPower(power);
+//            rightSliderMotor.setPower(power);
+//        }
+
     }
 
 
@@ -227,7 +230,7 @@ public class NovaTeleOpFull extends LinearOpMode{
         leftSliderMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightSliderMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        while ((Math.abs(rightSliderMotor.getCurrentPosition() ) >= targetEncoderPos - slowDownEncoderPos) && opModeIsActive()) {
+        while (gamepad2.dpad_down){
             telemetry.addData("current pos: ", getCurrentSliderEncoderPos());
             telemetry.addData("pos: ", rightSliderMotor.getCurrentPosition());
             telemetry.addData("target pos: ", targetEncoderPos - slowDownEncoderPos);
@@ -239,6 +242,17 @@ public class NovaTeleOpFull extends LinearOpMode{
         rightSliderMotor.setPower(0);
         leftSliderMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         rightSliderMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        //
+//        while ((Math.abs(rightSliderMotor.getCurrentPosition() ) >= targetEncoderPos - slowDownEncoderPos) && opModeIsActive()) {
+//            telemetry.addData("current pos: ", getCurrentSliderEncoderPos());
+//            telemetry.addData("pos: ", rightSliderMotor.getCurrentPosition());
+//            telemetry.addData("target pos: ", targetEncoderPos - slowDownEncoderPos);
+//            telemetry.update();
+//            leftSliderMotor.setPower(power);
+//            rightSliderMotor.setPower(power);
+//        }
+
     }
 
     // PID METHODS --------------------------------------------------------------------------------|
