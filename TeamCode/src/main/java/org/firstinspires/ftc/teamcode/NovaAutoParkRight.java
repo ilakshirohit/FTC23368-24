@@ -37,7 +37,7 @@ public class NovaAutoParkRight extends LinearOpMode {
         backLeftMotor.setPower(0.5);
         frontRightMotor.setPower(0.5);
         backRightMotor.setPower(0.5);
-        sleep(3000);
+        sleep(1500);
         frontLeftMotor.setPower(0);
         backLeftMotor.setPower(0);
         frontRightMotor.setPower(0);

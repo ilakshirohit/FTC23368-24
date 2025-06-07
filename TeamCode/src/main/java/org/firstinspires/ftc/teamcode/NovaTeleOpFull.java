@@ -9,6 +9,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
 
+// MAIN TELEOP
+
 @TeleOp
 public class NovaTeleOpFull extends LinearOpMode{
 
@@ -162,9 +164,9 @@ public class NovaTeleOpFull extends LinearOpMode{
 
 //                if (Math.abs(getCurrentSliderEncoderPos()) < 1500) {
                 if (Math.abs(rightSliderMotor.getCurrentPosition()) < 1000) {
-                    moveUp(1500, 0.4, 10);
+                    moveUp(1500, 0.7, 10);
                 } else {
-                    moveDown(1500, 0.4, 10);
+                    moveDown(1500, 0.7, 10);
                 }
             }
 
@@ -175,9 +177,9 @@ public class NovaTeleOpFull extends LinearOpMode{
 //                pidMoveSliderToEncoderPosBrakeMode(500, .1, 100);
                 if (Math.abs(rightSliderMotor.getCurrentPosition()) < 3500) {
 //                if (Math.abs(getCurrentSliderEncoderPos()) < 1800) {
-                    moveUp(3500, 0.4, 10);
+                    moveUp(3500, 0.7, 10);
                 } else {
-                    moveDown(3500, 0.4, 10);
+                    moveDown(3500, 0.7, 10);
                 }
             }
 
@@ -187,7 +189,28 @@ public class NovaTeleOpFull extends LinearOpMode{
                 telemetry.update();
 //                pidMoveSliderToEncoderPosBrakeMode(0, .1, 100);
 //                resetSliderEncoderWithLimitSwitch();
-                moveDown(0, 0.3, -100);
+                moveDown(0, 0.6, -100);
+            }
+
+            // CLIMB MOVEMENT
+            if (gamepad1.b){
+                armMotor.setPower(-0.8);
+                sleep(7000);
+                armMotor.setPower(-0.7);
+                sleep(1000);
+                armMotor.setPower(-0.6);
+                sleep(700);
+                armMotor.setPower(-0.5);
+                sleep(600);
+                armMotor.setPower(-0.4);
+                sleep(500);
+                armMotor.setPower(-0.3);
+                sleep(500);
+                armMotor.setPower(-0.2);
+                sleep(500);
+                armMotor.setPower(-0.1);
+                sleep(500);
+                armMotor.setPower(0.0);
             }
         }
     }
